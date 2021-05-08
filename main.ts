@@ -58,7 +58,7 @@ function newTail () {
 let lastTail: Sprite = null
 let tail: Sprite = null
 let mySprite: Sprite = null
-mySprite = sprites.create(img`
+mySprite = sprites.create(transformSprites.scale2x(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -75,6 +75,6 @@ mySprite = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
-    `, SpriteKind.Player)
+    `), SpriteKind.Player)
 controller.moveSprite(mySprite)
 initTail()
