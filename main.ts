@@ -1,6 +1,29 @@
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     transformSprites.rotateSprite(mySprite, 0)
 })
+function spawnFood (foodCount: number) {
+    for (let index = 0; index <= foodCount; index++) {
+        snakeFood = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . 6 6 6 5 5 6 6 6 . . . . 
+            . . . 7 7 7 7 6 6 6 6 6 6 . . . 
+            . . 6 7 7 7 7 8 8 8 1 1 6 6 . . 
+            . . 7 7 7 7 7 8 8 8 1 1 5 6 . . 
+            . 6 7 7 7 7 8 8 8 8 8 5 5 6 6 . 
+            . 6 7 7 7 8 8 8 6 6 6 6 5 6 6 . 
+            . 6 6 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . 6 8 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . . 6 8 7 7 8 6 6 6 6 6 8 6 . . 
+            . . 6 8 8 7 8 8 6 6 6 8 6 6 . . 
+            . . . 6 8 8 8 8 8 8 8 8 6 . . . 
+            . . . . 6 6 8 8 8 8 6 6 . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Food)
+        tiles.placeOnRandomTile(snakeFood, sprites.castle.tilePath5)
+    }
+}
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     transformSprites.rotateSprite(mySprite, -90)
 })
@@ -85,24 +108,8 @@ mySprite = sprites.create(transformSprites.scale2x(img`
 controller.moveSprite(mySprite)
 scene.cameraFollowSprite(mySprite)
 initTail()
-for (let index = 0; index <= 4; index++) {
-    snakeFood = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . 6 6 6 6 . . . . . . 
-        . . . . 6 6 6 5 5 6 6 6 . . . . 
-        . . . 7 7 7 7 6 6 6 6 6 6 . . . 
-        . . 6 7 7 7 7 8 8 8 1 1 6 6 . . 
-        . . 7 7 7 7 7 8 8 8 1 1 5 6 . . 
-        . 6 7 7 7 7 8 8 8 8 8 5 5 6 6 . 
-        . 6 7 7 7 8 8 8 6 6 6 6 5 6 6 . 
-        . 6 6 7 7 8 8 6 6 6 6 6 6 6 6 . 
-        . 6 8 7 7 8 8 6 6 6 6 6 6 6 6 . 
-        . . 6 8 7 7 8 6 6 6 6 6 8 6 . . 
-        . . 6 8 8 7 8 8 6 6 6 8 6 6 . . 
-        . . . 6 8 8 8 8 8 8 8 8 6 . . . 
-        . . . . 6 6 8 8 8 8 6 6 . . . . 
-        . . . . . . 6 6 6 6 . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Food)
-    tiles.placeOnRandomTile(snakeFood, sprites.castle.tilePath5)
-}
+game.onUpdateInterval(500, function () {
+    if (sprites.allOfKind(SpriteKind.Food).length < 4) {
+        spawnFood(10)
+    }
+})
