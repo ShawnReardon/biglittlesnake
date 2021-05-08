@@ -71,6 +71,7 @@ function initTail () {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Player)
+    tail.setPosition(mySprite.x - randint(10, 30), mySprite.y + randint(10, 30))
     tail.follow(mySprite, 100)
     lastTail = tail
 }
@@ -80,6 +81,30 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     transformSprites.rotateSprite(mySprite, 180)
 })
+function setup () {
+    mySprite = sprites.create(transformSprites.scale2x(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . 6 6 6 2 2 6 6 6 . . . . 
+        . . . . 6 6 6 2 2 6 6 6 . . . . 
+        . . . 6 6 6 1 6 6 1 6 6 6 . . . 
+        . . 6 6 6 6 6 6 6 6 6 6 6 6 . . 
+        . . 6 6 6 6 6 6 6 6 6 6 6 6 . . 
+        . . . 6 6 6 6 6 6 6 6 6 6 . . . 
+        . . . 6 6 6 6 6 6 6 6 6 6 . . . 
+        . . . 6 6 6 6 6 6 6 6 6 6 . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `), SpriteKind.Player)
+    controller.moveSprite(mySprite)
+    scene.cameraFollowSprite(mySprite)
+    initTail()
+    spawnBirds(4)
+}
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
     otherSprite.destroy()
     newTail()
@@ -107,34 +132,51 @@ function newTail () {
     tail.follow(lastTail, 100)
     lastTail = tail
 }
+function reset () {
+    mySprite = sprites.create(transformSprites.scale2x(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . 6 6 6 2 2 6 6 6 . . . . 
+        . . . . 6 6 6 2 2 6 6 6 . . . . 
+        . . . 6 6 6 1 6 6 1 6 6 6 . . . 
+        . . 6 6 6 6 6 6 6 6 6 6 6 6 . . 
+        . . 6 6 6 6 6 6 6 6 6 6 6 6 . . 
+        . . . 6 6 6 6 6 6 6 6 6 6 . . . 
+        . . . 6 6 6 6 6 6 6 6 6 6 . . . 
+        . . . 6 6 6 6 6 6 6 6 6 6 . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `), SpriteKind.Player)
+    mySprite.setPosition(oldX, oldY)
+    controller.moveSprite(mySprite)
+    scene.cameraFollowSprite(mySprite)
+    initTail()
+    spawnBirds(4)
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    oldX = mySprite.x
+    oldY = mySprite.y
+    for (let value of sprites.allOfKind(SpriteKind.Player)) {
+        value.destroy()
+    }
+    for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
+        value.destroy()
+    }
+    reset()
+})
+let oldY = 0
+let oldX = 0
 let lastTail: Sprite = null
 let tail: Sprite = null
 let snakeFood: Sprite = null
-let bird: Sprite = null
 let mySprite: Sprite = null
+let bird: Sprite = null
 tiles.setTilemap(tilemap`level1`)
-mySprite = sprites.create(transformSprites.scale2x(img`
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . 6 6 6 2 2 6 6 6 . . . . 
-    . . . . 6 6 6 2 2 6 6 6 . . . . 
-    . . . 6 6 6 1 6 6 1 6 6 6 . . . 
-    . . 6 6 6 6 6 6 6 6 6 6 6 6 . . 
-    . . 6 6 6 6 6 6 6 6 6 6 6 6 . . 
-    . . . 6 6 6 6 6 6 6 6 6 6 . . . 
-    . . . 6 6 6 6 6 6 6 6 6 6 . . . 
-    . . . 6 6 6 6 6 6 6 6 6 6 . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    `), SpriteKind.Player)
-controller.moveSprite(mySprite)
-scene.cameraFollowSprite(mySprite)
-initTail()
-spawnBirds(4)
+setup()
 game.onUpdateInterval(500, function () {
     if (sprites.allOfKind(SpriteKind.Food).length < 4) {
         spawnFood(10)
