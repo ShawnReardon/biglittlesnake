@@ -177,6 +177,9 @@ let mySprite: Sprite = null
 let bird: Sprite = null
 tiles.setTilemap(tilemap`level1`)
 setup()
+game.onUpdate(function () {
+    info.setScore(sprites.allOfKind(SpriteKind.Player).length - 2)
+})
 game.onUpdateInterval(500, function () {
     if (sprites.allOfKind(SpriteKind.Food).length < 4) {
         spawnFood(10)
