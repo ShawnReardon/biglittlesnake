@@ -1,3 +1,28 @@
+function spawnBirds (foodCount: number) {
+    for (let index = 0; index <= foodCount; index++) {
+        bird = sprites.create(img`
+            ....fffffff........fff..
+            ....ffddddff......ffdf..
+            ...ffffedddffffffffddf..
+            ..ffddeeeeeeeedddddddf..
+            .ffd1eeeeeeeeeeddddddff.
+            ffd111eeeeeeeeeeeedeeeff
+            fdeef1deeeeeeeeeeeeeeeef
+            deeeedd11eeeeeeeeeddddef
+            feeeeeef11eeeedddddddddf
+            ffeeeeeeeeeeedeeedffffff
+            .fffeeeeeeedeeeeeefff...
+            ...ffffffffffeeeeeeff...
+            ............ffeeeeeef...
+            ............fffeeeeef...
+            ..............fffffff...
+            ........................
+            `, SpriteKind.Enemy)
+        bird.setBounceOnWall(true)
+        tiles.placeOnRandomTile(bird, sprites.castle.tilePath5)
+        bird.setVelocity(100, 0)
+    }
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     transformSprites.rotateSprite(mySprite, 0)
 })
@@ -85,6 +110,7 @@ function newTail () {
 let lastTail: Sprite = null
 let tail: Sprite = null
 let snakeFood: Sprite = null
+let bird: Sprite = null
 let mySprite: Sprite = null
 tiles.setTilemap(tilemap`level1`)
 mySprite = sprites.create(transformSprites.scale2x(img`
@@ -108,6 +134,7 @@ mySprite = sprites.create(transformSprites.scale2x(img`
 controller.moveSprite(mySprite)
 scene.cameraFollowSprite(mySprite)
 initTail()
+spawnBirds(4)
 game.onUpdateInterval(500, function () {
     if (sprites.allOfKind(SpriteKind.Food).length < 4) {
         spawnFood(10)
